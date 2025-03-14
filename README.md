@@ -1,4 +1,4 @@
-# Blessed App API
+# PreachFlow API
 
 A robust Node.js API built with TypeScript for managing sermon outlines and church presentations.
 
