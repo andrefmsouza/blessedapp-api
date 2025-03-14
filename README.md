@@ -23,18 +23,20 @@ A robust Node.js API built with TypeScript for managing sermon outlines and chur
 
 ## 📁 Project Structure
 
+```
 src/
-├── adapter/ # Express adapter for controllers
-├── config/ # Configuration files
-├── controllers/ # Request handlers
-├── middlewares/ # Express middlewares
-├── models/ # Data models
-├── repositories/ # Database access layer
-├── routes/ # API routes
-├── services/ # Business logic
-├── types/ # TypeScript type definitions
-├── utils/ # Utility functions
-└── validators/ # Request validation schemas
+ ├── adapter/ # Express adapter for controllers
+ ├── config/ # Configuration files
+ ├── controllers/ # Request handlers
+ ├── middlewares/ # Express middlewares
+ ├── models/ # Data models
+ ├── repositories/ # Database access layer
+ ├── routes/ # API routes
+ ├── services/ # Business logic
+ ├── types/ # TypeScript type definitions
+ ├── utils/ # Utility functions
+ └── validators/ # Request validation schemas
+```
 
 ## 🚦 API Routes
 
