@@ -128,6 +128,11 @@ interface BibleReference {
 - Route protection with custom middleware
 - Data access control at the database level
 
+## 📖 Bible Source
+
+The Bible translations used in this project are sourced from [thiagobodruk/bible](https://github.com/thiagobodruk/bible) repository, which provides multiple Bible translations in JSON format. We are grateful for this valuable resource that enables us to offer different Bible versions in our application.
+
+
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!
