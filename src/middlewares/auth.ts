@@ -1,26 +1,33 @@
-import jwt from "jsonwebtoken";
-import dotenv from 'dotenv'
-dotenv.config()
+import jwt from 'jsonwebtoken';
+import { AppError } from '../utils/AppError';
+import { Request, Response, NextFunction } from 'express';
+import { adminAuth } from '../config/firebase-admin';
 
-const auth = async (req:any, res:any, next:any) => {
-  var token = req.headers['access-token'];
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
+    const token = req.headers.authorization?.split(" ")[1];
 
-  //Verifica se o token está no cabeçalho da requisicao
-  if (!token) 
-    return res.status(401).json({ auth: false, message: 'Nenhum token de autenticação.' });
-  
-  const secret: string = (process.env.SECRET as string);
+    if (!token) {
+        return next(new AppError("No token provided", 401));
+    }
 
-  //valida o token
-  jwt.verify(token, secret, function(err:any, decoded: any) {
-    //Caso tenha algum erro na validaçao do token
-    if (err) 
-      return res.status(500).json({ auth: false, message: 'Token inválido.' });
-    
-    // se tudo estiver ok, salva no request para uso posterior
-    req.body.USERID = decoded.id;
-    next();
-  });
-};
-
-export default auth;
+    try {
+        // Decodifica nosso JWT
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+        
+        try {
+            // Verifica o token do Firebase
+            const decodedToken = await adminAuth.verifyIdToken(decoded.idToken);
+            
+            // Se chegou aqui, o token é válido
+            res.locals.userId = decodedToken.uid;
+            res.locals.userEmail = decodedToken.email;
+            next();
+        } catch (error) {
+            // Se o token expirou, o usuário precisa fazer login novamente
+            return next(new AppError("Token expired", 401));
+        }
+    } catch (error) {
+        console.error("JWT Error:", error);
+        return next(new AppError("Unauthorized", 401));
+    }
+}

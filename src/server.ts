@@ -1,14 +1,48 @@
-import express from 'express';
-import cors from 'cors'
-import bodyParser from "body-parser";
-import routes from './routes';
+//Variaveis de ambiente
+import dotenv from 'dotenv';
+dotenv.config();
 
-const app = express();
+import express, {Request, Response} from 'express';
+import path from 'path';
+import cors from 'cors';
 
-app.use(bodyParser.json());
-app.use(cors());
-app.use(express.json());
-app.use(routes);
+//Rotas
+import rotasAPIv1 from './routes/routes';
 
+try{
 
-app.listen(3333);
+    var server = express();
+    
+    //CORS
+    server.use(cors());
+    
+    //Parametros via POST
+    server.use( express.urlencoded({ extended:true }) );
+    server.use( express.json() );
+    
+    //Diretório público
+    server.use( express.static( path.join(__dirname, '../../../../public' ) ) );
+    
+    //Rotas
+    server.use('/v1/', rotasAPIv1);
+
+    server.use("/", (req:Request, res:Response) =>{
+        res.status(200);
+        res.json({
+            status: 'success',
+            message: 'API is running'
+        });
+    });
+    
+    //404
+    server.use( (req:Request, res:Response) =>{
+        res.status(404);
+        res.json({ status: 'error', error: 'Endpoint não encontrado.' });
+    });
+    
+    //Inicia o servidor
+    server.listen( process.env.PORT , () => console.log('Rodando em http') );
+    
+}catch(err){
+    console.log("Error", err);
+}
